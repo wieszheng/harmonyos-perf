@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotChatHistory">
+    <option name="conversations">
+      <list>
+        <Conversation>
+          <option name="createTime" value="1751210084719" />
+          <option name="id" value="0197bc41496f7cdbb9f0aeae6fb0d0b7" />
+          <option name="title" value="新对话 2025年6月29日 23:14:44" />
+          <option name="updateTime" value="1751210084719" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751192790296" />
+          <option name="id" value="0197b23085677bbabeb1e0bba0cacbf5" />
+          <option name="title" value="python获取hdc list targets设备列表" />
+          <option name="updateTime" value="1751192790296" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751187606284" />
+          <option name="id" value="0197baea4b0c7d3eba1186e6b6981edd" />
+          <option name="title" value="新对话 2025年6月29日 17:00:06" />
+          <option name="updateTime" value="1751187606284" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751186612741" />
+          <option name="id" value="0197badb22057a869401d7657ce0ba89" />
+          <option name="title" value="新对话 2025年6月29日 16:43:32" />
+          <option name="updateTime" value="1751186612741" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751180263375" />
+          <option name="id" value="0197ba7a3fcf7ce4b62914dbff580459" />
+          <option name="title" value="新对话 2025年6月29日 14:57:43" />
+          <option name="updateTime" value="1751180263375" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751165956965" />
+          <option name="id" value="0197b99ff3657c198946c743b289a21c" />
+          <option name="title" value="新对话 2025年6月29日 10:59:16" />
+          <option name="updateTime" value="1751165956965" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751127236099" />
+          <option name="id" value="0197b7511e037068b47360338b7c8de7" />
+          <option name="title" value="新对话 2025年6月29日 00:13:56" />
+          <option name="updateTime" value="1751127236099" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751120210342" />
+          <option name="id" value="0197b6e5e9a67456bfc7b01513e43ac8" />
+          <option name="title" value="新对话 2025年6月28日 22:16:50" />
+          <option name="updateTime" value="1751120210342" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751106146550" />
+          <option name="id" value="0197b60f50f672229e41591b2d3cef24" />
+          <option name="title" value="新对话 2025年6月28日 18:22:26" />
+          <option name="updateTime" value="1751106146550" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751090755828" />
+          <option name="id" value="0197b52478f478d08ad04472d4692b8c" />
+          <option name="title" value="新对话 2025年6月28日 14:05:55" />
+          <option name="updateTime" value="1751090755828" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751071013771" />
+          <option name="id" value="0197b3f73b8b7a799828bb5480465a27" />
+          <option name="title" value="新对话 2025年6月28日 08:36:53" />
+          <option name="updateTime" value="1751071013771" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751043080928" />
+          <option name="id" value="0197b24d02e075059c8ea70effc061fe" />
+          <option name="title" value="新对话 2025年6月28日 00:51:20" />
+          <option name="updateTime" value="1751043080928" />
+        </Conversation>
+        <Conversation>
+          <option name="createTime" value="1751041213021" />
+          <option name="id" value="0197b23085677bbabeb1e0bba0cacbf5" />
+          <option name="title" value="python获取hdc list targets设备列表" />
+          <option name="turns">
+            <list>
+              <Turn>
+                <option name="agent" value="" />
+                <option name="answer" value="# 获取SWX Orhg Gzitvgh设备列表的方法&#10;&#10;要使用Kbgslm获取SWX (SzinlmbLH Wverxv Xlmmvxgli)的设备列表，你可以通过以下几种方法：&#10;&#10;## 方法8：使用hfykilxvhh调用swx命令&#10;&#10;```kbgslm&#10;rnklig hfykilxvhh&#10;&#10;wvu tvg_swx_gzitvgh():&#10;    gib:&#10;        ivhfog = hfykilxvhh.ifm(['swx', 'orhg', 'gzitvgh'], &#10;                              xzkgfiv_lfgkfg=Gifv, &#10;                              gvcg=Gifv,&#10;                              xsvxp=Gifv)&#10;        wverxvh = []&#10;        uli ormv rm ivhfog.hgwlfg.hkorgormvh():&#10;            ru ormv.hgirk() zmw mlg ormv.hgzighdrgs('Orhg lu'):&#10;                wverxvh.zkkvmw(ormv.hgirk())&#10;        ivgfim wverxvh&#10;    vcxvkg hfykilxvhh.XzoovwKilxvhhViili zh v:&#10;        kirmg(u&quot;Viili vcvxfgrmt swx xlnnzmw: {v}&quot;)&#10;        ivgfim []&#10;&#10;wverxvh = tvg_swx_gzitvgh()&#10;kirmg(&quot;Xlmmvxgvw wverxvh:&quot;, wverxvh)&#10;```&#10;&#10;## 方法7：使用lh.klkvm (较旧的方法)&#10;&#10;```kbgslm&#10;rnklig lh&#10;&#10;wvu tvg_swx_gzitvgh():&#10;    gib:&#10;        drgs lh.klkvm('swx orhg gzitvgh') zh u:&#10;            lfgkfg = u.ivzw()&#10;        wverxvh = []&#10;        uli ormv rm lfgkfg.hkorgormvh():&#10;            ru ormv.hgirk() zmw mlg ormv.hgzighdrgs('Orhg lu'):&#10;                wverxvh.zkkvmw(ormv.hgirk())&#10;        ivgfim wverxvh&#10;    vcxvkg Vcxvkgrlm zh v:&#10;        kirmg(u&quot;Viili: {v}&quot;)&#10;        ivgfim []&#10;&#10;wverxvh = tvg_swx_gzitvgh()&#10;kirmg(&quot;Xlmmvxgvw wverxvh:&quot;, wverxvh)&#10;```&#10;&#10;## 方法6：解析详细输出（如果需要更多设备信息）&#10;&#10;```kbgslm&#10;rnklig hfykilxvhh&#10;rnklig iv&#10;&#10;wvu tvg_swx_gzitvgh_wvgzrovw():&#10;    gib:&#10;        ivhfog = hfykilxvhh.ifm(['swx', 'orhg', 'gzitvgh', '-e'], &#10;                              xzkgfiv_lfgkfg=Gifv, &#10;                              gvcg=Gifv,&#10;                              xsvxp=Gifv)&#10;        &#10;        wverxvh = []&#10;        xfiivmg_wverxv = {}&#10;        &#10;        uli ormv rm ivhfog.hgwlfg.hkorgormvh():&#10;            ru ormv.hgzighdrgs('Orhg lu'):&#10;                xlmgrmfv&#10;            ru mlg ormv.hgirk():&#10;                ru xfiivmg_wverxv:&#10;                    wverxvh.zkkvmw(xfiivmg_wverxv)&#10;                    xfiivmg_wverxv = {}&#10;                xlmgrmfv&#10;                &#10;            nzgxs = iv.nzgxs(i'^\h*(\d+)\h*:\h*(.*)$', ormv)&#10;            ru nzgxs:&#10;                pvb, ezofv = nzgxs.tilfkh()&#10;                xfiivmg_wverxv[pvb.hgirk()] = ezofv.hgirk()&#10;        &#10;        ru xfiivmg_wverxv:&#10;            wverxvh.zkkvmw(xfiivmg_wverxv)&#10;            &#10;        ivgfim wverxvh&#10;    vcxvkg hfykilxvhh.XzoovwKilxvhhViili zh v:&#10;        kirmg(u&quot;Viili vcvxfgrmt swx xlnnzmw: {v}&quot;)&#10;        ivgfim []&#10;&#10;wverxvh = tvg_swx_gzitvgh_wvgzrovw()&#10;kirmg(&quot;Wvgzrovw wverxv rmul:&quot;, wverxvh)&#10;```&#10;&#10;## 注意事项&#10;&#10;8. 确保swx工具已正确安装并添加到系统KZGS中&#10;7. 可能需要先运行`swx hsvoo`或`swx hgzig`来初始化连接&#10;6. 对于SzinlmbLH设备，可能需要先启用开发者选项和FHY调试&#10;5. 在某些系统上可能需要使用`hfwl`或管理员权限&#10;&#10;以上代码可以根据你的具体需求进行调整，例如添加错误处理、超时设置或更复杂的解析逻辑。" />
+                <option name="chatResource" value="user" />
+                <option name="codeReferences">
+                  <list />
+                </option>
+                <option name="command" value="" />
+                <option name="conversationId" value="0197b23085677bbabeb1e0bba0cacbf5" />
+                <option name="historyDocumentMap">
+                  <map>
+                    <entry key="file:///D:/Workcode/python/harmonyos-perf/core/hdc.py" value="# !/usr/bin/env python&#10;# -*- coding:utf-8 -*-&#10;&quot;&quot;&quot;&#10;@Version  : Python 3.12&#10;@Time     : 2025/6/27 23:27&#10;@Author   : wieszheng&#10;@Software : PyCharm&#10;&quot;&quot;&quot;&#10;import shlex&#10;import subprocess&#10;&#10;from dataclasses import dataclass&#10;from typing import List, Union&#10;&#10;from hmdriver2.driver import Driver&#10;from loguru import logger&#10;&#10;&#10;@dataclass&#10;class CommandResult:&#10;    output: str&#10;    error: str&#10;&#10;def _execute_command(cmdargs: Union[str, List[str]]):&#10;    if isinstance(cmdargs, (list, tuple)):&#10;        cmdline: str = ' '.join(list(map(shlex.quote, cmdargs)))&#10;    elif isinstance(cmdargs, str):&#10;        cmdline = cmdargs&#10;&#10;    logger.debug(cmdline)&#10;    try:&#10;        output, errors = subprocess.Popen(cmdline, stdout=subprocess.PIPE,&#10;                                   stderr=subprocess.PIPE, shell=True).communicate()&#10;&#10;        logger.debug(errors)&#10;        output = errors.decode(&quot;utf-8&quot;)&#10;&#10;&#10;&#10;&#10;&#10;    except Exception as e:&#10;        pass&#10;&#10;def list_devices() -&gt; List[str]:&#10;    devices = []&#10;    result = _execute_command(f&quot;hdc list targets&quot;)&#10;    if result.exit_code == 0 and result.output:&#10;        lines = result.output.strip().split('\n')&#10;        for line in lines:&#10;            if line.__contains__('Empty'):&#10;                continue&#10;            devices.append(line.strip())&#10;&#10;    if result.exit_code != 0:&#10;        raise Exception(&quot;HDC error&quot;, result.error)&#10;&#10;    return devices&#10;&#10;&#10;class HDC:&#10;    def __init__(self, serial: str = None):&#10;        self.hdc = self.init_hdc_driver(serial)&#10;&#10;    def init_hdc_driver(self, serial=None):&#10;        try:&#10;            print(&quot;初始化HDC驱动...&quot;)&#10;            return Driver(serial)&#10;        except Exception as e:&#10;            print(e)&#10;            return None&#10;&#10;&#10;if __name__ == '__main__':&#10;    _execute_command(f&quot;hdc list targets&quot;)" />
+                  </map>
+                </option>
+                <option name="messageId" value="0197b24b80877bbabeb1f6adae3fa31f" />
+                <option name="question" value="kbgslm获取swx orhg gzitvgh设备列表" />
+                <option name="rating" value="UNRATED" />
+                <option name="referenceBeans">
+                  <list />
+                </option>
+                <option name="status" value="SUCCESS" />
+                <option name="variables">
+                  <list />
+                </option>
+              </Turn>
+            </list>
+          </option>
+          <option name="updateTime" value="1751043006595" />
+        </Conversation>
+      </list>
+    </option>
+  </component>
+</project>

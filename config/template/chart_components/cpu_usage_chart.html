@@ -1,0 +1,101 @@
+<!-- CPU使用率图表组件 -->
+<div class="chart-card">
+    <div class="card-header">
+        <div class="card-title-bar" style="background: #FF9800;"></div>
+        <div class="card-title">CPU使用率监控</div>
+    </div>
+    <div class="card-content">
+        <div class="chart-area">
+            <div id="cpuUsageChart" class="chart"></div>
+        </div>
+        <div class="table-area">
+            <div class="table-title">使用率统计</div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>核心</th>
+                            <th>平均(%)</th>
+                            <th>最高(%)</th>
+                            <th>最低(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in stats %}
+                        <tr>
+                            <td>{{ item.coreName }}</td>
+                            <td>{{ item.cpuCoreLoadAve }}</td>
+                            <td>{{ item.cpuCoreLoadMax }}</td>
+                            <td>{{ item.cpuCoreLoadMin }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// CPU使用率图表初始化
+function initCpuUsageChart() {
+    var cpuUsageChart = echarts.init(document.getElementById('cpuUsageChart'));
+    var cpuUsageOption = {
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: '#fff',
+            borderColor: '#FF9800',
+            borderWidth: 1,
+            textStyle: { color: '#222' },
+            extraCssText: 'box-shadow:0 2px 8px #e0e3ea;border-radius:8px;'
+        },
+        legend: { 
+            data: {{ series | safe }}.map(function(s){return s.name;}), 
+            top: 10 
+        },
+        xAxis: { 
+            type: 'category', 
+            data: {{ timestamps | safe }}, 
+            axisLabel: { color: '#666' } 
+        },
+        yAxis: { 
+            type: 'value', 
+            name: '%', 
+            min: 0, 
+            max: 100,
+            axisLabel: { color: '#666' } 
+        },
+        series: {{ series | safe }}.map(function(s) {
+            s.lineStyle = { width: 2 };
+            s.symbol = 'none';
+            return s;
+        }),
+        dataZoom: [
+            {
+                type: 'inside',
+                xAxisIndex: 0,
+                filterMode: 'none',
+                zoomOnMouseWheel: true,
+                moveOnMouseMove: true,
+                moveOnMouseWheel: true
+            },
+            {
+                type: 'slider',
+                xAxisIndex: 0,
+                filterMode: 'none',
+                height: 18,
+                bottom: 0
+            }
+        ]
+    };
+    cpuUsageChart.setOption(cpuUsageOption);
+    
+    // 返回图表实例以便后续操作
+    return cpuUsageChart;
+}
+
+// 页面加载完成后初始化图表
+document.addEventListener('DOMContentLoaded', function() {
+    window.cpuUsageChart = initCpuUsageChart();
+});
+</script> 

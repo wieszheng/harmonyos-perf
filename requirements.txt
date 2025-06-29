@@ -1,0 +1,4 @@
+hmdriver2
+uiviewer
+opencv-python
+numpy

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>系统性能监控面板</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            background: #f5f6fa;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(800px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .chart-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px #e0e3ea;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title-bar {
+            width: 4px;
+            height: 24px;
+            border-radius: 2px;
+            margin-right: 12px;
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #222;
+            flex: 1;
+        }
+        
+        .card-content {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .chart-area {
+            flex: 2;
+            min-width: 0;
+        }
+        
+        .table-area {
+            flex: 1;
+            background: #fafbfc;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #e0e3ea;
+            padding: 16px;
+        }
+        .table-scroll {
+            /* 不设置max-height和overflow，让内容撑开 */
+        }
+        
+        .table-title {
+            font-size: 1em;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #1976d2;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            padding: 6px 8px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            color: #1976d2;
+            font-weight: bold;
+            background: #f0f4fa;
+            border-bottom: 2px solid #d0d7e5;
+            /* 移除sticky相关属性 */
+        }
+        
+        tr:hover td {
+            background: #e3f0fc;
+        }
+        
+        .chart {
+            width: 100%;
+            height: 320px;
+            min-height: 200px;
+            max-height: 400px;
+        }
+        
+        @media (max-width: 1200px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            .card-content {
+                flex-direction: column;
+                height: auto;
+            }
+            .chart-area {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- CPU频率图表 -->
+        <div class="chart-card">
+            <div class="card-header">
+                <div class="card-title-bar" style="background: #2196F3;"></div>
+                <div class="card-title">CPU频率监控</div>
+            </div>
+            <div class="card-content">
+                <div class="chart-area">
+                    <div id="cpuFreqChart" class="chart"></div>
+                </div>
+                <div class="table-area">
+                    <div class="table-title">频率统计</div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>核心</th>
+                                    <th>平均(GHz)</th>
+                                    <th>最高(GHz)</th>
+                                    <th>最低(GHz)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td>CPU0</td>
+                                    <td>0.77</td>
+                                    <td>1.43</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU10</td>
+                                    <td>1.5</td>
+                                    <td>2.62</td>
+                                    <td>1.24</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU11</td>
+                                    <td>1.5</td>
+                                    <td>2.62</td>
+                                    <td>1.24</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU1</td>
+                                    <td>0.82</td>
+                                    <td>1.43</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU2</td>
+                                    <td>0.82</td>
+                                    <td>1.43</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU3</td>
+                                    <td>0.82</td>
+                                    <td>1.43</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU4</td>
+                                    <td>1.55</td>
+                                    <td>1.93</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU5</td>
+                                    <td>1.58</td>
+                                    <td>1.93</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU6</td>
+                                    <td>1.6</td>
+                                    <td>1.93</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU7</td>
+                                    <td>1.61</td>
+                                    <td>1.93</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU8</td>
+                                    <td>1.63</td>
+                                    <td>2.15</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU9</td>
+                                    <td>1.63</td>
+                                    <td>2.15</td>
+                                    <td>0.42</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CPU使用率图表 -->
+        <div class="chart-card">
+            <div class="card-header">
+                <div class="card-title-bar" style="background: #FF9800;"></div>
+                <div class="card-title">CPU使用率监控</div>
+            </div>
+            <div class="card-content">
+                <div class="chart-area">
+                    <div id="cpuUsageChart" class="chart"></div>
+                </div>
+                <div class="table-area">
+                    <div class="table-title">使用率统计</div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>核心</th>
+                                    <th>平均(%)</th>
+                                    <th>最高(%)</th>
+                                    <th>最低(%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td>CPU0</td>
+                                    <td>40.16</td>
+                                    <td>59.6</td>
+                                    <td>24.75</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU10</td>
+                                    <td>21.5</td>
+                                    <td>51.52</td>
+                                    <td>0.0</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU11</td>
+                                    <td>0.52</td>
+                                    <td>6.86</td>
+                                    <td>0.0</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU1</td>
+                                    <td>37.06</td>
+                                    <td>54.0</td>
+                                    <td>22.77</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU2</td>
+                                    <td>29.87</td>
+                                    <td>47.52</td>
+                                    <td>10.0</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU3</td>
+                                    <td>21.42</td>
+                                    <td>37.37</td>
+                                    <td>9.9</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU4</td>
+                                    <td>23.55</td>
+                                    <td>48.0</td>
+                                    <td>5.0</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU5</td>
+                                    <td>7.46</td>
+                                    <td>19.19</td>
+                                    <td>0.0</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU6</td>
+                                    <td>16.11</td>
+                                    <td>37.37</td>
+                                    <td>0.89</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU7</td>
+                                    <td>6.37</td>
+                                    <td>19.8</td>
+                                    <td>0.0</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU8</td>
+                                    <td>13.74</td>
+                                    <td>32.0</td>
+                                    <td>1.96</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>CPU9</td>
+                                    <td>5.51</td>
+                                    <td>18.0</td>
+                                    <td>0.0</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内存使用图表 -->
+        <div class="chart-card">
+            <div class="card-header">
+                <div class="card-title-bar" style="background: #4CAF50;"></div>
+                <div class="card-title">内存使用监控</div>
+            </div>
+            <div class="card-content">
+                <div class="chart-area">
+                    <div id="memoryChart" class="chart"></div>
+                </div>
+                <div class="table-area">
+                    <div class="table-title">内存统计</div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>类型</th>
+                                    <th>平均(MB)</th>
+                                    <th>最高(MB)</th>
+                                    <th>最低(MB)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td>arkts内存</td>
+                                    <td>96.37</td>
+                                    <td>109.8</td>
+                                    <td>69.09</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>gpu内存</td>
+                                    <td>53.36</td>
+                                    <td>91.18</td>
+                                    <td>38.05</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>图形内存</td>
+                                    <td>36.54</td>
+                                    <td>50.19</td>
+                                    <td>17.63</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>native内存</td>
+                                    <td>99.71</td>
+                                    <td>114.18</td>
+                                    <td>72.08</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>应用内存</td>
+                                    <td>361.22</td>
+                                    <td>426.67</td>
+                                    <td>293.59</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>栈内存</td>
+                                    <td>2.24</td>
+                                    <td>2.33</td>
+                                    <td>2.06</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>交换内存</td>
+                                    <td>24.85</td>
+                                    <td>26.69</td>
+                                    <td>23.96</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CPU频率图表
+        var cpuFreqChart = echarts.init(document.getElementById('cpuFreqChart'));
+        var cpuFreqOption = {
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: '#fff',
+                borderColor: '#2196F3',
+                borderWidth: 1,
+                textStyle: { color: '#222' },
+                extraCssText: 'box-shadow:0 2px 8px #e0e3ea;border-radius:8px;'
+            },
+            legend: { 
+                data: [{"name": "CPU 0", "type": "line", "data": [0.55, 1.02, 0.42, 0.42, 1.29, 0.67, 1.02, 0.55, 1.43, 0.55, 0.49, 1.43, 0.86, 0.42, 0.55, 1.43, 0.42, 0.42, 0.42, 1.43, 0.42]}, {"name": "CPU 1", "type": "line", "data": [0.55, 1.02, 0.42, 0.42, 1.29, 0.67, 1.02, 0.86, 1.43, 0.55, 1.29, 1.43, 0.86, 0.42, 0.55, 1.43, 0.42, 0.42, 0.42, 1.43, 0.42]}, {"name": "CPU 2", "type": "line", "data": [0.55, 1.02, 0.42, 0.42, 1.29, 0.67, 1.02, 0.86, 1.43, 0.55, 1.29, 1.43, 0.86, 0.42, 0.55, 1.43, 0.42, 0.42, 0.42, 1.43, 0.42]}, {"name": "CPU 3", "type": "line", "data": [0.55, 1.02, 0.42, 0.42, 1.29, 0.67, 1.02, 0.86, 1.43, 0.55, 1.29, 1.43, 0.86, 0.42, 0.55, 1.43, 0.42, 0.42, 0.42, 1.43, 0.42]}, {"name": "CPU 4", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 1.75, 1.32, 0.87, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.57]}, {"name": "CPU 5", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 1.75, 1.32, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.57]}, {"name": "CPU 6", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 1.75, 1.32, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.93]}, {"name": "CPU 7", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 1.75, 1.57, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.93]}, {"name": "CPU 8", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 2.15, 1.57, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.93]}, {"name": "CPU 9", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 2.15, 1.57, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.93]}, {"name": "CPU 10", "type": "line", "data": [1.24, 1.24, 1.99, 1.24, 1.7, 1.84, 1.24, 1.24, 2.62, 1.24, 1.24, 1.24, 1.99, 1.24, 1.99, 1.24, 1.36, 1.24, 1.99, 1.24, 1.24]}, {"name": "CPU 11", "type": "line", "data": [1.24, 1.24, 1.99, 1.24, 1.7, 1.84, 1.24, 1.24, 2.62, 1.24, 1.24, 1.24, 1.99, 1.24, 1.99, 1.24, 1.36, 1.24, 1.99, 1.24, 1.24]}].map(function(s){return s.name;}), 
+                top: 10 
+            },
+            xAxis: { 
+                type: 'category', 
+                data: ["16:57:36", "16:57:37", "16:57:38", "16:57:39", "16:57:40", "16:57:41", "16:57:42", "16:57:43", "16:57:44", "16:57:45", "16:57:46", "16:57:47", "16:57:48", "16:57:49", "16:57:50", "16:57:51", "16:57:53", "16:57:54", "16:57:55", "16:57:56", "16:57:57"], 
+                axisLabel: { color: '#666' } 
+            },
+            yAxis: { 
+                type: 'value', 
+                name: 'GHz', 
+                min: 0, 
+                axisLabel: { color: '#666' } 
+            },
+            series: [{"name": "CPU 0", "type": "line", "data": [0.55, 1.02, 0.42, 0.42, 1.29, 0.67, 1.02, 0.55, 1.43, 0.55, 0.49, 1.43, 0.86, 0.42, 0.55, 1.43, 0.42, 0.42, 0.42, 1.43, 0.42]}, {"name": "CPU 1", "type": "line", "data": [0.55, 1.02, 0.42, 0.42, 1.29, 0.67, 1.02, 0.86, 1.43, 0.55, 1.29, 1.43, 0.86, 0.42, 0.55, 1.43, 0.42, 0.42, 0.42, 1.43, 0.42]}, {"name": "CPU 2", "type": "line", "data": [0.55, 1.02, 0.42, 0.42, 1.29, 0.67, 1.02, 0.86, 1.43, 0.55, 1.29, 1.43, 0.86, 0.42, 0.55, 1.43, 0.42, 0.42, 0.42, 1.43, 0.42]}, {"name": "CPU 3", "type": "line", "data": [0.55, 1.02, 0.42, 0.42, 1.29, 0.67, 1.02, 0.86, 1.43, 0.55, 1.29, 1.43, 0.86, 0.42, 0.55, 1.43, 0.42, 0.42, 0.42, 1.43, 0.42]}, {"name": "CPU 4", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 1.75, 1.32, 0.87, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.57]}, {"name": "CPU 5", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 1.75, 1.32, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.57]}, {"name": "CPU 6", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 1.75, 1.32, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.93]}, {"name": "CPU 7", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 1.75, 1.57, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.93]}, {"name": "CPU 8", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 2.15, 1.57, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.93]}, {"name": "CPU 9", "type": "line", "data": [1.57, 1.0, 1.57, 1.57, 1.93, 1.93, 1.93, 1.93, 2.15, 1.57, 1.57, 1.93, 1.93, 1.44, 1.57, 1.57, 1.57, 0.42, 1.57, 1.57, 1.93]}, {"name": "CPU 10", "type": "line", "data": [1.24, 1.24, 1.99, 1.24, 1.7, 1.84, 1.24, 1.24, 2.62, 1.24, 1.24, 1.24, 1.99, 1.24, 1.99, 1.24, 1.36, 1.24, 1.99, 1.24, 1.24]}, {"name": "CPU 11", "type": "line", "data": [1.24, 1.24, 1.99, 1.24, 1.7, 1.84, 1.24, 1.24, 2.62, 1.24, 1.24, 1.24, 1.99, 1.24, 1.99, 1.24, 1.36, 1.24, 1.99, 1.24, 1.24]}].map(function(s) {
+                s.lineStyle = { width: 1 };
+                s.symbol = 'none';
+                return s;
+            }),
+            dataZoom: [
+                {
+                    type: 'inside',
+                    xAxisIndex: 0,
+                    filterMode: 'none',
+                    zoomOnMouseWheel: true,
+                    moveOnMouseMove: true,
+                    moveOnMouseWheel: true
+                }
+            ]
+        };
+        cpuFreqChart.setOption(cpuFreqOption);
+
+        // CPU使用率图表
+        var cpuUsageChart = echarts.init(document.getElementById('cpuUsageChart'));
+        var cpuUsageOption = {
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: '#fff',
+                borderColor: '#FF9800',
+                borderWidth: 1,
+                textStyle: { color: '#222' },
+                extraCssText: 'box-shadow:0 2px 8px #e0e3ea;border-radius:8px;'
+            },
+            legend: { 
+                data: [{"name": "CPU 0", "type": "line", "data": [35.4, 26.8, 24.75, 29.29, 52.0, 51.0, 59.0, 43.0, 48.0, 50.5, 34.95, 50.0, 59.6, 53.92, 31.68, 30.39, 31.37, 27.72, 40.4, 34.95, 28.71]}, {"name": "CPU 1", "type": "line", "data": [26.79, 23.23, 42.42, 22.77, 45.92, 45.54, 52.0, 33.33, 35.64, 40.0, 41.75, 39.18, 54.0, 42.0, 41.18, 28.71, 28.16, 43.14, 34.0, 30.0, 28.43]}, {"name": "CPU 2", "type": "line", "data": [16.96, 19.19, 25.0, 10.0, 37.37, 36.36, 47.52, 26.26, 34.0, 29.29, 46.15, 35.71, 43.0, 33.66, 28.71, 32.67, 16.67, 35.29, 28.28, 26.47, 18.63]}, {"name": "CPU 3", "type": "line", "data": [17.7, 13.27, 14.0, 9.9, 27.55, 29.7, 35.35, 20.2, 21.78, 22.77, 22.33, 27.84, 37.37, 28.0, 27.18, 18.63, 10.89, 14.85, 14.14, 24.51, 11.76]}, {"name": "CPU 4", "type": "line", "data": [16.07, 11.11, 11.88, 12.12, 37.37, 48.0, 41.0, 36.36, 31.68, 35.64, 14.71, 39.18, 43.43, 37.25, 5.94, 18.45, 5.0, 13.59, 13.13, 14.85, 7.77]}, {"name": "CPU 5", "type": "line", "data": [0.0, 4.0, 3.0, 0.0, 15.31, 16.83, 19.19, 11.11, 11.76, 19.19, 2.88, 18.56, 17.0, 10.1, 4.85, 0.0, 0.0, 0.0, 0.0, 1.96, 0.97]}, {"name": "CPU 6", "type": "line", "data": [0.89, 9.09, 4.95, 3.03, 30.0, 37.37, 36.63, 28.28, 22.77, 32.32, 13.46, 31.25, 33.33, 20.59, 4.9, 3.96, 4.9, 3.92, 2.04, 10.78, 3.88]}, {"name": "CPU 7", "type": "line", "data": [0.0, 0.0, 0.0, 0.0, 19.19, 13.0, 19.8, 11.22, 7.92, 17.17, 0.96, 15.46, 16.16, 12.87, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "CPU 8", "type": "line", "data": [3.54, 2.02, 4.0, 5.0, 30.3, 31.31, 32.0, 18.37, 16.67, 27.27, 7.62, 25.0, 30.61, 29.13, 3.0, 1.96, 2.94, 5.88, 3.03, 2.97, 5.83]}, {"name": "CPU 9", "type": "line", "data": [0.0, 0.0, 0.0, 0.0, 14.14, 14.0, 15.15, 10.0, 7.0, 18.0, 0.96, 13.54, 16.0, 7.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "CPU 10", "type": "line", "data": [18.58, 17.17, 0.0, 15.0, 51.52, 42.0, 43.0, 28.57, 20.79, 35.64, 8.57, 36.84, 29.0, 24.0, 2.91, 11.76, 13.86, 11.76, 12.12, 14.71, 13.73]}, {"name": "CPU 11", "type": "line", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.03, 0.0, 0.99, 0.0, 6.86, 0.0, 0.0, 0.0, 0.0, 0.0]}].map(function(s){return s.name;}), 
+                top: 10 
+            },
+            xAxis: { 
+                type: 'category', 
+                data: ["16:57:36", "16:57:37", "16:57:38", "16:57:39", "16:57:40", "16:57:41", "16:57:42", "16:57:43", "16:57:44", "16:57:45", "16:57:46", "16:57:47", "16:57:48", "16:57:49", "16:57:50", "16:57:51", "16:57:53", "16:57:54", "16:57:55", "16:57:56", "16:57:57"], 
+                axisLabel: { color: '#666' } 
+            },
+            yAxis: { 
+                type: 'value', 
+                name: '%', 
+                min: 0, 
+                max: 100,
+                axisLabel: { color: '#666' } 
+            },
+            series: [{"name": "CPU 0", "type": "line", "data": [35.4, 26.8, 24.75, 29.29, 52.0, 51.0, 59.0, 43.0, 48.0, 50.5, 34.95, 50.0, 59.6, 53.92, 31.68, 30.39, 31.37, 27.72, 40.4, 34.95, 28.71]}, {"name": "CPU 1", "type": "line", "data": [26.79, 23.23, 42.42, 22.77, 45.92, 45.54, 52.0, 33.33, 35.64, 40.0, 41.75, 39.18, 54.0, 42.0, 41.18, 28.71, 28.16, 43.14, 34.0, 30.0, 28.43]}, {"name": "CPU 2", "type": "line", "data": [16.96, 19.19, 25.0, 10.0, 37.37, 36.36, 47.52, 26.26, 34.0, 29.29, 46.15, 35.71, 43.0, 33.66, 28.71, 32.67, 16.67, 35.29, 28.28, 26.47, 18.63]}, {"name": "CPU 3", "type": "line", "data": [17.7, 13.27, 14.0, 9.9, 27.55, 29.7, 35.35, 20.2, 21.78, 22.77, 22.33, 27.84, 37.37, 28.0, 27.18, 18.63, 10.89, 14.85, 14.14, 24.51, 11.76]}, {"name": "CPU 4", "type": "line", "data": [16.07, 11.11, 11.88, 12.12, 37.37, 48.0, 41.0, 36.36, 31.68, 35.64, 14.71, 39.18, 43.43, 37.25, 5.94, 18.45, 5.0, 13.59, 13.13, 14.85, 7.77]}, {"name": "CPU 5", "type": "line", "data": [0.0, 4.0, 3.0, 0.0, 15.31, 16.83, 19.19, 11.11, 11.76, 19.19, 2.88, 18.56, 17.0, 10.1, 4.85, 0.0, 0.0, 0.0, 0.0, 1.96, 0.97]}, {"name": "CPU 6", "type": "line", "data": [0.89, 9.09, 4.95, 3.03, 30.0, 37.37, 36.63, 28.28, 22.77, 32.32, 13.46, 31.25, 33.33, 20.59, 4.9, 3.96, 4.9, 3.92, 2.04, 10.78, 3.88]}, {"name": "CPU 7", "type": "line", "data": [0.0, 0.0, 0.0, 0.0, 19.19, 13.0, 19.8, 11.22, 7.92, 17.17, 0.96, 15.46, 16.16, 12.87, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "CPU 8", "type": "line", "data": [3.54, 2.02, 4.0, 5.0, 30.3, 31.31, 32.0, 18.37, 16.67, 27.27, 7.62, 25.0, 30.61, 29.13, 3.0, 1.96, 2.94, 5.88, 3.03, 2.97, 5.83]}, {"name": "CPU 9", "type": "line", "data": [0.0, 0.0, 0.0, 0.0, 14.14, 14.0, 15.15, 10.0, 7.0, 18.0, 0.96, 13.54, 16.0, 7.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "CPU 10", "type": "line", "data": [18.58, 17.17, 0.0, 15.0, 51.52, 42.0, 43.0, 28.57, 20.79, 35.64, 8.57, 36.84, 29.0, 24.0, 2.91, 11.76, 13.86, 11.76, 12.12, 14.71, 13.73]}, {"name": "CPU 11", "type": "line", "data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.03, 0.0, 0.99, 0.0, 6.86, 0.0, 0.0, 0.0, 0.0, 0.0]}].map(function(s) {
+                s.lineStyle = { width: 1 };
+                s.symbol = 'none';
+                return s;
+            }),
+            dataZoom: [
+                {
+                    type: 'inside',
+                    xAxisIndex: 0,
+                    filterMode: 'none',
+                    zoomOnMouseWheel: true,
+                    moveOnMouseMove: true,
+                    moveOnMouseWheel: true
+                },
+            ]
+        };
+        cpuUsageChart.setOption(cpuUsageOption);
+
+        // 内存使用图表
+        var memoryChart = echarts.init(document.getElementById('memoryChart'));
+        var memoryOption = {
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: '#fff',
+                borderColor: '#4CAF50',
+                borderWidth: 1,
+                textStyle: { color: '#222' },
+                extraCssText: 'box-shadow:0 2px 8px #e0e3ea;border-radius:8px;'
+            },
+            legend: { 
+                data: [{"name": "arkts\u5185\u5b58", "type": "line", "data": [69.09, 69.09, 69.09, 69.09, 69.09, 82.28, 91.83, 102.23, 102.65, 103.0, 104.15, 104.25, 109.66, 109.72, 109.8, 109.8, 109.8, 109.8, 109.8, 109.8, 109.8]}, {"name": "gpu\u5185\u5b58", "type": "line", "data": [65.01, 65.01, 65.01, 65.01, 65.01, 44.55, 43.21, 86.33, 62.64, 91.18, 59.13, 50.62, 51.83, 39.57, 38.05, 38.05, 38.05, 38.05, 38.05, 38.05, 38.05]}, {"name": "\u56fe\u5f62\u5185\u5b58", "type": "line", "data": [17.63, 17.63, 17.63, 17.63, 17.63, 35.51, 35.51, 41.37, 41.37, 50.19, 41.37, 41.37, 44.47, 44.47, 43.35, 43.35, 43.35, 43.35, 43.35, 43.35, 43.35]}, {"name": "native\u5185\u5b58", "type": "line", "data": [72.08, 72.1, 72.1, 72.1, 72.1, 93.86, 98.65, 106.43, 105.14, 105.28, 106.0, 105.88, 108.62, 113.4, 114.18, 113.64, 113.63, 112.56, 112.54, 113.1, 110.47]}, {"name": "\u5e94\u7528\u5185\u5b58", "type": "line", "data": [293.59, 293.59, 293.6, 293.62, 293.62, 331.39, 345.3, 413.74, 388.74, 426.67, 387.5, 378.96, 392.05, 384.32, 382.64, 382.09, 382.1, 380.98, 380.97, 381.4, 378.78]}, {"name": "\u6808\u5185\u5b58", "type": "line", "data": [2.06, 2.06, 2.06, 2.06, 2.06, 2.3, 2.29, 2.3, 2.29, 2.29, 2.29, 2.29, 2.32, 2.33, 2.33, 2.33, 2.33, 2.31, 2.29, 2.2, 2.2]}, {"name": "\u4ea4\u6362\u5185\u5b58", "type": "line", "data": [26.69, 26.67, 26.67, 26.67, 26.67, 25.25, 24.64, 24.59, 24.57, 24.55, 24.52, 24.52, 24.02, 24.01, 23.98, 23.98, 23.98, 23.98, 23.98, 23.96, 23.96]}].map(function(s){return s.name;}), 
+                top: 10 
+            },
+            xAxis: { 
+                type: 'category', 
+                data: ["16:57:36", "16:57:37", "16:57:38", "16:57:39", "16:57:40", "16:57:41", "16:57:42", "16:57:43", "16:57:44", "16:57:45", "16:57:46", "16:57:47", "16:57:48", "16:57:49", "16:57:50", "16:57:51", "16:57:53", "16:57:54", "16:57:55", "16:57:56", "16:57:57"], 
+                axisLabel: { color: '#666' } 
+            },
+            yAxis: { 
+                type: 'value', 
+                name: 'MB', 
+                min: 0,
+                axisLabel: { color: '#666' } 
+            },
+            series: [{"name": "arkts\u5185\u5b58", "type": "line", "data": [69.09, 69.09, 69.09, 69.09, 69.09, 82.28, 91.83, 102.23, 102.65, 103.0, 104.15, 104.25, 109.66, 109.72, 109.8, 109.8, 109.8, 109.8, 109.8, 109.8, 109.8]}, {"name": "gpu\u5185\u5b58", "type": "line", "data": [65.01, 65.01, 65.01, 65.01, 65.01, 44.55, 43.21, 86.33, 62.64, 91.18, 59.13, 50.62, 51.83, 39.57, 38.05, 38.05, 38.05, 38.05, 38.05, 38.05, 38.05]}, {"name": "\u56fe\u5f62\u5185\u5b58", "type": "line", "data": [17.63, 17.63, 17.63, 17.63, 17.63, 35.51, 35.51, 41.37, 41.37, 50.19, 41.37, 41.37, 44.47, 44.47, 43.35, 43.35, 43.35, 43.35, 43.35, 43.35, 43.35]}, {"name": "native\u5185\u5b58", "type": "line", "data": [72.08, 72.1, 72.1, 72.1, 72.1, 93.86, 98.65, 106.43, 105.14, 105.28, 106.0, 105.88, 108.62, 113.4, 114.18, 113.64, 113.63, 112.56, 112.54, 113.1, 110.47]}, {"name": "\u5e94\u7528\u5185\u5b58", "type": "line", "data": [293.59, 293.59, 293.6, 293.62, 293.62, 331.39, 345.3, 413.74, 388.74, 426.67, 387.5, 378.96, 392.05, 384.32, 382.64, 382.09, 382.1, 380.98, 380.97, 381.4, 378.78]}, {"name": "\u6808\u5185\u5b58", "type": "line", "data": [2.06, 2.06, 2.06, 2.06, 2.06, 2.3, 2.29, 2.3, 2.29, 2.29, 2.29, 2.29, 2.32, 2.33, 2.33, 2.33, 2.33, 2.31, 2.29, 2.2, 2.2]}, {"name": "\u4ea4\u6362\u5185\u5b58", "type": "line", "data": [26.69, 26.67, 26.67, 26.67, 26.67, 25.25, 24.64, 24.59, 24.57, 24.55, 24.52, 24.52, 24.02, 24.01, 23.98, 23.98, 23.98, 23.98, 23.98, 23.96, 23.96]}].map(function(s) {
+                s.lineStyle = { width: 1 };
+                s.symbol = 'none';
+                return s;
+            }),
+            dataZoom: [
+                {
+                    type: 'inside',
+                    xAxisIndex: 0,
+                    filterMode: 'none',
+                    zoomOnMouseWheel: true,
+                    moveOnMouseMove: true,
+                    moveOnMouseWheel: true
+                },
+            ]
+        };
+        memoryChart.setOption(memoryOption);
+
+        // 响应式处理
+        window.addEventListener('resize', function() {
+            cpuFreqChart.resize();
+            cpuUsageChart.resize();
+            memoryChart.resize();
+        });
+    </script>
+</body>
+</html> 

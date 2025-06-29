@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>系统性能监控面板</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            background: #f5f6fa;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(800px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .chart-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px #e0e3ea;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title-bar {
+            width: 4px;
+            height: 24px;
+            border-radius: 2px;
+            margin-right: 12px;
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #222;
+            flex: 1;
+        }
+        
+        .card-content {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .chart-area {
+            flex: 2;
+            min-width: 0;
+        }
+        
+        .table-area {
+            flex: 1;
+            background: #fafbfc;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #e0e3ea;
+            padding: 16px;
+        }
+        .table-scroll {
+            /* 不设置max-height和overflow，让内容撑开 */
+        }
+        
+        .table-title {
+            font-size: 1em;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #1976d2;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        
+        th, td {
+            padding: 6px 8px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            color: #1976d2;
+            font-weight: bold;
+            background: #f0f4fa;
+            border-bottom: 2px solid #d0d7e5;
+            /* 移除sticky相关属性 */
+        }
+        
+        tr:hover td {
+            background: #e3f0fc;
+        }
+        
+        .chart {
+            width: 100%;
+            height: 320px;
+            min-height: 200px;
+            max-height: 400px;
+        }
+        
+        @media (max-width: 1200px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            .card-content {
+                flex-direction: column;
+                height: auto;
+            }
+            .chart-area {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- CPU频率图表 -->
+        <div class="chart-card">
+            <div class="card-header">
+                <div class="card-title-bar" style="background: #2196F3;"></div>
+                <div class="card-title">CPU频率监控</div>
+            </div>
+            <div class="card-content">
+                <div class="chart-area">
+                    <div id="cpuFreqChart" class="chart"></div>
+                </div>
+                <div class="table-area">
+                    <div class="table-title">频率统计</div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>核心</th>
+                                    <th>平均(GHz)</th>
+                                    <th>最高(GHz)</th>
+                                    <th>最低(GHz)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cpu_freq_stats %}
+                                <tr>
+                                    <td>{{ item.coreName }}</td>
+                                    <td>{{ item.cpuFreqAve }}</td>
+                                    <td>{{ item.cpuFreqMax }}</td>
+                                    <td>{{ item.cpuFreqMin }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CPU使用率图表 -->
+        <div class="chart-card">
+            <div class="card-header">
+                <div class="card-title-bar" style="background: #FF9800;"></div>
+                <div class="card-title">CPU使用率监控</div>
+            </div>
+            <div class="card-content">
+                <div class="chart-area">
+                    <div id="cpuUsageChart" class="chart"></div>
+                </div>
+                <div class="table-area">
+                    <div class="table-title">使用率统计</div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>核心</th>
+                                    <th>平均(%)</th>
+                                    <th>最高(%)</th>
+                                    <th>最低(%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cpu_usage_stats %}
+                                <tr>
+                                    <td>{{ item.coreName }}</td>
+                                    <td>{{ item.cpuCoreLoadAve }}</td>
+                                    <td>{{ item.cpuCoreLoadMax }}</td>
+                                    <td>{{ item.cpuCoreLoadMin }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内存使用图表 -->
+        <div class="chart-card">
+            <div class="card-header">
+                <div class="card-title-bar" style="background: #4CAF50;"></div>
+                <div class="card-title">内存使用监控</div>
+            </div>
+            <div class="card-content">
+                <div class="chart-area">
+                    <div id="memoryChart" class="chart"></div>
+                </div>
+                <div class="table-area">
+                    <div class="table-title">内存统计</div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>类型</th>
+                                    <th>平均(MB)</th>
+                                    <th>最高(MB)</th>
+                                    <th>最低(MB)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in memory_stats %}
+                                <tr>
+                                    <td>{{ item.coreName }}</td>
+                                    <td>{{ item.memInfoAve }}</td>
+                                    <td>{{ item.memInfoMax }}</td>
+                                    <td>{{ item.memInfoMin }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CPU频率图表
+        var cpuFreqChart = echarts.init(document.getElementById('cpuFreqChart'));
+        var cpuFreqOption = {
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: '#fff',
+                borderColor: '#2196F3',
+                borderWidth: 1,
+                textStyle: { color: '#222' },
+                extraCssText: 'box-shadow:0 2px 8px #e0e3ea;border-radius:8px;'
+            },
+            legend: { 
+                data: {{ cpu_freq_series | safe }}.map(function(s){return s.name;}), 
+                top: 10 
+            },
+            xAxis: { 
+                type: 'category', 
+                data: {{ cpu_freq_timestamps | safe }}, 
+                axisLabel: { color: '#666' } 
+            },
+            yAxis: { 
+                type: 'value', 
+                name: 'GHz', 
+                min: 0, 
+                axisLabel: { color: '#666' } 
+            },
+            series: {{ cpu_freq_series | safe }}.map(function(s) {
+                s.lineStyle = { width: 1 };
+                s.symbol = 'none';
+                return s;
+            }),
+            dataZoom: [
+                {
+                    type: 'inside',
+                    xAxisIndex: 0,
+                    filterMode: 'none',
+                    zoomOnMouseWheel: true,
+                    moveOnMouseMove: true,
+                    moveOnMouseWheel: true
+                }
+            ]
+        };
+        cpuFreqChart.setOption(cpuFreqOption);
+
+        // CPU使用率图表
+        var cpuUsageChart = echarts.init(document.getElementById('cpuUsageChart'));
+        var cpuUsageOption = {
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: '#fff',
+                borderColor: '#FF9800',
+                borderWidth: 1,
+                textStyle: { color: '#222' },
+                extraCssText: 'box-shadow:0 2px 8px #e0e3ea;border-radius:8px;'
+            },
+            legend: { 
+                data: {{ cpu_usage_series | safe }}.map(function(s){return s.name;}), 
+                top: 10 
+            },
+            xAxis: { 
+                type: 'category', 
+                data: {{ cpu_usage_timestamps | safe }}, 
+                axisLabel: { color: '#666' } 
+            },
+            yAxis: { 
+                type: 'value', 
+                name: '%', 
+                min: 0, 
+                max: 100,
+                axisLabel: { color: '#666' } 
+            },
+            series: {{ cpu_usage_series | safe }}.map(function(s) {
+                s.lineStyle = { width: 1 };
+                s.symbol = 'none';
+                return s;
+            }),
+            dataZoom: [
+                {
+                    type: 'inside',
+                    xAxisIndex: 0,
+                    filterMode: 'none',
+                    zoomOnMouseWheel: true,
+                    moveOnMouseMove: true,
+                    moveOnMouseWheel: true
+                },
+            ]
+        };
+        cpuUsageChart.setOption(cpuUsageOption);
+
+        // 内存使用图表
+        var memoryChart = echarts.init(document.getElementById('memoryChart'));
+        var memoryOption = {
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: '#fff',
+                borderColor: '#4CAF50',
+                borderWidth: 1,
+                textStyle: { color: '#222' },
+                extraCssText: 'box-shadow:0 2px 8px #e0e3ea;border-radius:8px;'
+            },
+            legend: { 
+                data: {{ memory_series | safe }}.map(function(s){return s.name;}), 
+                top: 10 
+            },
+            xAxis: { 
+                type: 'category', 
+                data: {{ memory_timestamps | safe }}, 
+                axisLabel: { color: '#666' } 
+            },
+            yAxis: { 
+                type: 'value', 
+                name: 'MB', 
+                min: 0,
+                axisLabel: { color: '#666' } 
+            },
+            series: {{ memory_series | safe }}.map(function(s) {
+                s.lineStyle = { width: 1 };
+                s.symbol = 'none';
+                return s;
+            }),
+            dataZoom: [
+                {
+                    type: 'inside',
+                    xAxisIndex: 0,
+                    filterMode: 'none',
+                    zoomOnMouseWheel: true,
+                    moveOnMouseMove: true,
+                    moveOnMouseWheel: true
+                },
+            ]
+        };
+        memoryChart.setOption(memoryOption);
+
+        // 响应式处理
+        window.addEventListener('resize', function() {
+            cpuFreqChart.resize();
+            cpuUsageChart.resize();
+            memoryChart.resize();
+        });
+    </script>
+</body>
+</html> 

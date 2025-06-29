@@ -1,0 +1,100 @@
+<!-- 内存使用图表组件 -->
+<div class="chart-card">
+    <div class="card-header">
+        <div class="card-title-bar" style="background: #4CAF50;"></div>
+        <div class="card-title">内存使用监控</div>
+    </div>
+    <div class="card-content">
+        <div class="chart-area">
+            <div id="memoryChart" class="chart"></div>
+        </div>
+        <div class="table-area">
+            <div class="table-title">内存统计</div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>类型</th>
+                            <th>平均(MB)</th>
+                            <th>最高(MB)</th>
+                            <th>最低(MB)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in stats %}
+                        <tr>
+                            <td>{{ item.coreName }}</td>
+                            <td>{{ item.memInfoAve }}</td>
+                            <td>{{ item.memInfoMax }}</td>
+                            <td>{{ item.memInfoMin }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 内存使用图表初始化
+function initMemoryChart() {
+    var memoryChart = echarts.init(document.getElementById('memoryChart'));
+    var memoryOption = {
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: '#fff',
+            borderColor: '#4CAF50',
+            borderWidth: 1,
+            textStyle: { color: '#222' },
+            extraCssText: 'box-shadow:0 2px 8px #e0e3ea;border-radius:8px;'
+        },
+        legend: { 
+            data: {{ series | safe }}.map(function(s){return s.name;}), 
+            top: 10 
+        },
+        xAxis: { 
+            type: 'category', 
+            data: {{ timestamps | safe }}, 
+            axisLabel: { color: '#666' } 
+        },
+        yAxis: { 
+            type: 'value', 
+            name: 'MB', 
+            min: 0,
+            axisLabel: { color: '#666' } 
+        },
+        series: {{ series | safe }}.map(function(s) {
+            s.lineStyle = { width: 2 };
+            s.symbol = 'none';
+            return s;
+        }),
+        dataZoom: [
+            {
+                type: 'inside',
+                xAxisIndex: 0,
+                filterMode: 'none',
+                zoomOnMouseWheel: true,
+                moveOnMouseMove: true,
+                moveOnMouseWheel: true
+            },
+            {
+                type: 'slider',
+                xAxisIndex: 0,
+                filterMode: 'none',
+                height: 18,
+                bottom: 0
+            }
+        ]
+    };
+    memoryChart.setOption(memoryOption);
+    
+    // 返回图表实例以便后续操作
+    return memoryChart;
+}
+
+// 页面加载完成后初始化图表
+document.addEventListener('DOMContentLoaded', function() {
+    window.memoryChart = initMemoryChart();
+});
+</script> 
