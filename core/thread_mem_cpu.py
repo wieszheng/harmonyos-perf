@@ -15,7 +15,7 @@ from loguru import logger
 
 from core.cpu import CpuMonitor
 from core.memory import MemoryMonitor
-from utils.render_chart import ChartRenderer
+from utils.render.render_chart import ChartRenderer
 
 
 class ThreadMemCPU:

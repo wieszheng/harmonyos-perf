@@ -6,17 +6,22 @@
 @Author   : wieszheng
 @Software : PyCharm
 """
-import argparse
-from wxy_dialogue import Dialogue
+import unittest
 
-def main():
-    parser = argparse.ArgumentParser(description='HarmonyOS性能测试工具')
-    parser.add_argument('--device', type=str, required=True, help='设备ID')
-    parser.add_argument('--package', type=str, required=True, help='应用包名')
-    parser.add_argument('--activity', type=str, help='主Activity')
-    args = parser.parse_args()
+class Test(unittest.TestCase):
+    def setUp(self):
+        print("开始")
+
+    def tearDown(self):
+        print("结束")
+
+    def test_01(self):
+        print("test_01")
+
+    def test_02(self):
+        print("test_02")
+
+if __name__ == '__main__':
+    unittest.main()
 
 
-
-if __name__ == "__main__":
-    main()

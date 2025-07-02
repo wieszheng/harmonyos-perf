@@ -23,7 +23,7 @@ class JsonChartRenderer:
         self.config = config
         self.json_file = config.get('json_file', 'converted_data.json')
         self.output_file = config.get('output_file', 'dashboard.html')
-        self.template_file = config.get('template_file', 'template.html')
+        self.template_file = config.get('template_file', '../template.html')
 
         # 数据存储
         self.data: Dict[str, Any] = {}
@@ -204,7 +204,7 @@ class JsonChartRenderer:
             print(f"✅ 内存数据: {len(memory_series)}个系列")
 
             # 创建Jinja2环境
-            env = jinja2.Environment(loader=jinja2.FileSystemLoader('.'))
+            env = jinja2.Environment(loader=jinja2.FileSystemLoader('..'))
             template = env.get_template(self.template_file)
 
             # 渲染模板

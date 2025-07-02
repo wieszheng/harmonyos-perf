@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鸿蒙性能报告</title>
+  <style>
+    body { background: #f7f8fa; color: #222; font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif; margin: 0; }
+    .container { max-width: 960px; margin: 0 auto; padding: 16px 48px; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 4px 16px 0 rgba(0,0,0,0.08); margin-bottom: 20px; padding: 24px 48px; }
+    .header-title { font-size: 1.5em; font-weight: bold; margin-bottom: 4px; text-align: center; }
+    .header-desc { color: #888; font-size: 1em; margin-bottom: 18px; text-align: center; }
+    .header-info-row { display: flex; flex-direction: row; flex-wrap: wrap; border-radius: 8px; background: #fafbfc; padding: 18px 0 10px 0; margin-top: 10px; margin-bottom: 0; gap: 0; }
+    .header-info-item { width: 50%; min-width: 0; text-align: left; display: flex; flex-direction: column; align-items: flex-start; padding: 0 18px; box-sizing: border-box; }
+    .header-info-item:first-child { padding-left: 32px; }
+    .header-info-item:last-child { padding-right: 32px; }
+    .header-info-label { color: #666; font-size: 1em; margin-bottom: 2px; }
+    .header-info-value { font-weight: bold; font-size: 1.18em; }
+    .section-title-wrap { display: flex; align-items: center; margin-bottom: 12px; margin-top: 8px; }
+    .section-title-bar { width: 5px; height: 24px; background: #1890ff; border-radius: 4px; margin-right: 10px; display: inline-block; }
+    .section-title { font-size: 1.15em; font-weight: bold; }
+    .score-section { display: flex; align-items: center; gap: 24px; }
+    .score-main { font-size: 2.8em; color: #27ae60; font-weight: bold; }
+    .score-bar-wrap { flex: 1; }
+    .score-bar-bg { background: #eee; border-radius: 8px; height: 12px; width: 100%; position: relative; }
+    .score-bar { background: #1890ff; height: 12px; border-radius: 8px; width: 0%; position: absolute; left: 0; top: 0; }
+    .score-labels { display: none; }
+    .score-up { font-size: 1em; margin-left: 8px; font-weight: bold; }
+    .score-up.positive { color: #27ae60; }
+    .score-up.negative { color: #e74c3c; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .metric-card {
+      background: #fff;
+      border-radius: 14px;
+      border: 1.5px solid #f0f1f2;
+      box-shadow: 0 1px 2px #f7f8fa;
+      padding: 18px 18px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 110px;
+    }
+    .metric-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 2px;
+    }
+    .metric-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #e6faf2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4em;
+      color: #30cf80;
+      margin-right: 6px;
+    }
+    .metric-title {
+      font-size: 1em;
+      color: #222;
+      font-weight: 500;
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      margin-left: 0;
+    }
+    .metric-header .metric-title { margin-left: 0; }
+    .metric-header .metric-icon + .metric-title { margin-left: 0; }
+    .metric-tag {
+      display: inline-block;
+      background: #222;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 0.85em;
+      padding: 1px 10px;
+      margin-left: 8px;
+      margin-bottom: 0;
+      font-weight: 500;
+    }
+    .metric-value {
+      font-size: 1.6em;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 2px;
+      margin-top: 6px;
+    }
+    .metric-value .unit {
+      font-size: 0.7em;
+      font-weight: bold;
+      margin-left: 2px;
+    }
+    .metric-desc {
+      color: #888;
+      font-size: 0.92em;
+      margin-top: 2px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      font-weight: bold;
+    }
+    .metric-desc .trend {
+      margin-left: 8px;
+      font-weight: bold;
+    }
+    .metric-desc .trend.up { color: #e74c3c; }
+    .metric-desc .trend.down { color: #27ae60; }
+    .footer-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1.5px solid #f0f1f2;
+      box-shadow: 0 1px 2px #f7f8fa;
+      margin: 32px 0 0 0;
+      padding: 24px 18px 16px 18px;
+      text-align: center;
+      color: #666;
+      font-size: 1em;
+      position: relative;
+    }
+    .footer-card hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 0 0 18px 0;
+    }
+    .footer-link { color: #1890ff; text-decoration: none; font-weight: bold; }
+    .footer-time { color: #888; font-size: 0.98em; margin-top: 6px; }
+    @media (max-width: 900px) {
+      .container { max-width: 100%; }
+      .card { padding: 14px 30px; }
+      .header-info-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 10px 6px 6px 6px;
+        gap: 0;
+        background: #fafbfc;
+        border-radius: 8px;
+        margin-top: 10px;
+        margin-bottom: 0;
+      }
+      .header-info-item {
+        width: 50%;
+        min-width: 0;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 2px !important;
+        box-sizing: border-box;
+      }
+      .header-info-item:first-child { padding-left: 2px !important; }
+      .header-info-item:last-child { padding-right: 2px !important; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .section-title-bar { height: 18px; }
+    }
+    @media (min-width: 901px) {
+      .header-info-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-radius: 8px;
+        background: #fafbfc;
+        padding: 18px 0 10px 0;
+        margin-top: 10px;
+        margin-bottom: 0;
+        gap: 0;
+      }
+      .header-info-item {
+        flex: 1;
+        min-width: 0;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 18px;
+        box-sizing: border-box;
+      }
+      .header-info-item:first-child { padding-left: 32px; }
+      .header-info-item:last-child { padding-right: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 头部信息卡片 -->
+    <div class="card">
+      <div class="header-title">鸿蒙应用性能报告</div>
+      <div class="header-desc">App性能监控</div>
+      <div class="header-info-row">
+        <div class="header-info-item">
+          <div class="header-info-label">应用名称：</div>
+          <div class="header-info-value">文小言 App</div>
+        </div>
+        <div class="header-info-item">
+          <div class="header-info-label">版本号：</div>
+          <div class="header-info-value"></div>
+        </div>
+        <div class="header-info-item">
+          <div class="header-info-label">开始时间：</div>
+          <div class="header-info-value">12:00</div>
+        </div>
+        <div class="header-info-item">
+          <div class="header-info-label">持续时长：</div>
+          <div class="header-info-value">12</div>
+        </div>
+      </div>
+    </div>
+    <!-- 应用性能评分卡片 -->
+    <div class="card">
+      <div class="section-title-wrap">
+        <span class="section-title-bar"></span>
+        <span class="section-title">应用性能评分</span>
+      </div>
+      <div class="score-section">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <span class="score-main">0</span>
+          <span class="score-label" style="color:#888; font-size:0.9em; margin-top:2px; font-weight:bold;">综合评分</span>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar-bg">
+            <div class="score-bar"></div>
+          </div>
+        </div>
+        <span class="score-up positive">↗ +0<br><span style="font-size:0.9em;color:#888;">较上版本</span></span>
+      </div>
+    </div>
+    <!-- 核心性能指标卡片 -->
+    <div class="card">
+      <div class="section-title-wrap">
+        <span class="section-title-bar"></span>
+        <span class="section-title">核心性能指标</span>
+      </div>
+      <div class="metrics-grid">
+        
+      </div>
+    </div>
+    <!-- 性能数据图表卡片（占位） -->
+    <div class="card">
+      <div class="section-title-wrap">
+        <span class="section-title-bar"></span>
+        <span class="section-title">性能数据图表</span>
+      </div>
+      <div style="color:#aaa;text-align:center;padding:24px 0;">可视化性能指标和分布数据<br>（此处可集成图表组件）</div>
+    </div>
+    <!-- 说明卡片 -->
+    <div class="card" style="margin-top:32px; text-align:center; color:#666; font-size:1em;">
+      <hr style="border:none; border-top:1px solid #eee; margin:0 0 18px 0;" />
+      <div>此报告由文小言应用性能监控自动生成</div>
+      <div style="color:#888; font-size:0.9em; margin-top:6px;">生成时间：2025/07/02 22:44:43</div>
+    </div>
+  </div>
+</body>
+</html> 

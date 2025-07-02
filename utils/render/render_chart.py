@@ -28,7 +28,7 @@ class ChartRenderer:
         self.time_col = config.get('time_col', 'timestamp')
         self.time_format = config.get('time_format', '%H:%M:%S')
         self.output_file = config.get('output_file', 'chart.html')
-        self.template_file = config.get('template_file', 'template.html')
+        self.template_file = config.get('template_file', '../template.html')
         self.unit = config.get('unit', '%')
         self.title = config.get('title', '未知')
         self.decs = config.get('decs', '未知')
