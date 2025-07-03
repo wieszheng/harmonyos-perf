@@ -130,6 +130,56 @@ class SQLPersister:
         finally:
             session.close()
 
+    def get_fps_avg(self, test_run_id=None):
+
+        session = Session()
+        try:
+            query = session.query(MonitorData)
+            if test_run_id:
+                query = query.filter(MonitorData.test_run_id == test_run_id)
+            fps_values = []
+            for row in query:
+                # 假设fps字段为dict或float
+                fps = row.fps
+                if isinstance(fps, dict):
+                    # 取主fps
+                    fps_val = fps.get("fps", 0)
+                else:
+                    fps_val = float(fps)
+                fps_values.append(fps_val)
+            if fps_values:
+                return round(sum(fps_values) / len(fps_values), 2)
+            else:
+                return 0
+        finally:
+            session.close()
+
+    def get_mem_avg(self, test_run_id=None):
+        session = self.Session()
+        try:
+            query = session.query(MonitorData)
+            if test_run_id:
+                query = query.filter(MonitorData.test_run_id == test_run_id)
+            mem_values = []
+            for row in query:
+                mem = row.mem
+                total = 0
+                if isinstance(mem, dict):
+                    total = sum(float(v) for v in mem.values() if isinstance(v, (int, float)) or (isinstance(v, str) and v.replace('.', '', 1).isdigit()))
+                elif isinstance(mem, str):
+                    import json
+                    try:
+                        mem_dict = json.loads(mem)
+                        total = sum(float(v) for v in mem_dict.values() if isinstance(v, (int, float)) or (isinstance(v, str) and v.replace('.', '', 1).isdigit()))
+                    except Exception:
+                        total = 0
+                mem_values.append(total)
+            if mem_values:
+                return round(sum(mem_values) / len(mem_values), 2)
+            else:
+                return 0
+        finally:
+            session.close()
 
 if __name__ == '__main__':
     sql = SQLPersister()

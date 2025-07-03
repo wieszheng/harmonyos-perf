@@ -1,6 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
 from history_db import HistoryDB
+from core.persistence.db import SQLPersister
 
 icons = {
     "clock": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>',
@@ -12,7 +13,7 @@ icons = {
 }
 
 # 获取历史数据
-db = HistoryDB()
+db = SQLPersister()
 history = db.get_history(limit=2)  # 取最近两个版本
 
 # 当前版本和上一个版本
@@ -58,6 +59,19 @@ for metric in current.get("metrics", []):
         "trend": trend,
         "trend_type": trend_type
     })
+
+# 新增：读取fps均值并与目标值对比
+fps_avg = db.get_fps_avg()  # 可加test_run_id参数
+fps_target = 60
+fps_trend = "达标" if fps_avg >= fps_target else "未达标"
+metrics.append({
+    "title": "FPS均值",
+    "value": fps_avg,
+    "unit": "",
+    "target": fps_target,
+    "trend": fps_trend,
+    "trend_type": "up" if fps_avg >= fps_target else "down"
+})
 
 data = {
     "app_name": "文小言 App",
