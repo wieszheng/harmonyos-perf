@@ -44,22 +44,69 @@ class Monitor:
         :param is_temp:
         :return:
         """
-        flags = {
-            "c": is_cpu,
-            "r": is_memory,
-            "f": is_fps,
-            "net": is_net,
-            "g": is_gpu,
-            "t": is_temp,
-        }
-
-        command = f"SP_daemon -PKG {package_name} -N 1"
-        for key, enabled in flags.items():
-            if enabled:
-                command += f" -{key}"
-
-        logger.debug(f"SP_daemon command: {command}")
-        out = self.device.shell(command).output
+        # flags = {
+        #     "c": is_cpu,
+        #     "r": is_memory,
+        #     "f": is_fps,
+        #     "net": is_net,
+        #     "g": is_gpu,
+        #     "t": is_temp,
+        # }
+        #
+        # command = f"SP_daemon -PKG {package_name} -N 1"
+        # for key, enabled in flags.items():
+        #     if enabled:
+        #         command += f" -{key}"
+        #
+        # logger.debug(f"SP_daemon command: {command}")
+        # out = self.device.shell(command).output
+        out = '''
+          order:0 timestamp=1501839064260
+          order:1 TotalcpuUsage=0.502513
+          order:2 TotalcpuidleUsage=99.497487
+          order:3 TotalcpuioWaitUsage=0.000000
+          order:4 TotalcpuirqUsage=0.000000
+          order:5 TotalcpuniceUsage=0.000000
+          order:6 TotalcpusoftIrqUsage=0.000000
+          order:7 TotalcpusystemUsage=0.251256
+          order:8 TotalcpuuserUsage=0.251256
+          order:9 cpu0Frequency=1992000
+          order:10 cpu0Usage=1.000000
+          order:11 cpu0idleUsage=99.000000
+          order:12 cpu0ioWaitUsage=0.000000
+          order:13 cpu0irqUsage=0.000000
+          order:14 cpu0niceUsage=0.000000
+          order:15 cpu0softIrqUsage=0.000000
+          order:16 cpu0systemUsage=0.000000
+          order:17 cpu0userUsage=1.000000
+          order:18 cpu1Frequency=1992000
+          order:19 cpu1Usage=0.000000
+          order:20 cpu1idleUsage=100.000000
+          order:21 cpu1ioWaitUsage=0.000000
+          order:22 cpu1irqUsage=0.000000
+          order:23 cpu1niceUsage=0.000000
+          order:24 cpu1softIrqUsage=0.000000
+          order:25 cpu1systemUsage=0.000000
+          order:26 cpu1userUsage=0.000000
+          order:27 cpu2Frequency=1992000
+          order:28 cpu2Usage=1.000000
+          order:29 cpu2idleUsage=99.000000
+          order:30 cpu2ioWaitUsage=0.000000
+          order:31 cpu2irqUsage=0.000000
+          order:32 cpu2niceUsage=0.000000
+          order:33 cpu2softIrqUsage=0.000000
+          order:34 cpu2systemUsage=1.000000
+          order:35 cpu2userUsage=0.000000
+          order:36 cpu3Frequency=1992000
+          order:37 cpu3Usage=0.000000
+          order:38 cpu3idleUsage=100.000000
+          order:39 cpu3ioWaitUsage=0.000000
+          order:40 cpu3irqUsage=0.000000
+          order:41 cpu3niceUsage=0.000000
+          order:42 cpu3softIrqUsage=0.000000
+          order:43 cpu3systemUsage=0.000000
+          order:44 cpu3userUsage=0.000000
+        '''
         data_block = re.search(r'(?s)order:.*', out)
         if not data_block:
             logger.error("内存数据格式不正确，未找到有效数据块")
@@ -98,45 +145,65 @@ class Monitor:
         df = pd.DataFrame([data])
         df.to_csv(filename, mode='a', header=not file_exists, index=False)
 
-    def parser_cpu_data(self, cpu_data: Dict[str, Any]):
+    @staticmethod
+    def parser_cpu_data(cpu_data: Dict[str, Any]):
         """
         解析CPU数据
         :param cpu_data:
         :return:
         """
-        cpu_info = {}
+        freq_info = {}
+        usage_info = {}
         for key, value in cpu_data.items():
-            if re.search(r'cpu(\d+)Frequency', key):
-                mhz_value = round(float(value) / 1_000_000, 2)  # MHz
-                cpu_info[key] = mhz_value
-            elif re.search(r'cpu(\d+)Usage', key):
-                cpu_info[key] = round(float(value), 2)
+            if re.match(r'cpu(\d+)Frequency', key):
+                if value in (None, 'NA'):
+                    freq_info[key] = 0
+                else:
+                    mhz_value = round(float(value) / 1_000_000, 2)  # MHz
+                    freq_info[key] = mhz_value
 
-        return cpu_info
+            elif re.match(r'cpu(\d+)Usage', key):
+                if value in (None, 'NA'):
+                    usage_info[key] = 0
+                else:
+                    usage_info[key] = round(float(value), 2)
 
-    def parser_memory_data(self, memory_data: Dict[str, Any]):
+        return {"freq": freq_info, "usage": usage_info}
+
+    @staticmethod
+    def parser_memory_data(memory_data: Dict[str, Any]):
         """
-        解析内存数据
-        :param memory_data:
-        :return:
+        解析内存数据，输出格式：
+        {
+            "pss": 123.45,  # MB
+            "NativePss": 12.34,
+            ...
+        }
         """
         memory_info = {}
         for key, value in memory_data.items():
             if (key.endswith("Pss") and not key.startswith("child")) or key == "pss":
-                mb_value = round(float(value) / 1024, 2)  # MB
-                memory_info[key] = mb_value
+                if value in (None, 'NA'):
+                    memory_info[key] = 0
+                else:
+                    mb_value = float(value) / 1024
+                    memory_info[key] = round(mb_value, 2)
         return memory_info
 
-    def parser_fps_data(self, fps_data: Dict[str, Any]):
+    @staticmethod
+    def parser_fps_data(fps_data: Dict[str, Any]) -> Dict:
         """
-        解析FPS数据
-        :param fps_data:
-        :return:
+        解析FPS数据，输出格式：
+        {
+            "fps": 60.0
+        }
         """
         fps_info = {}
-        for key, value in fps_data.items():
-            if key == "fps":
-                fps_info[key] = value
+        value = fps_data.get("fps")
+        if value not in (None, 'NA'):
+            fps_info["fps"] = int(value)
+        else:
+            fps_info["fps"] = 0
         return fps_info
 
     def parser_net_data(self):
@@ -211,6 +278,7 @@ class Monitor:
                 return obj.isoformat()
             raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
 
+        output_json = csv_file_path.replace(".csv", ".json")
         try:
             with open(output_json, 'w', encoding='utf-8') as f:
                 import json
@@ -218,7 +286,9 @@ class Monitor:
             logger.info(f"已保存到 {output_json}")
         except Exception as e:
             logger.error(f"写入JSON文件失败: {e}")
+
+
 if __name__ == '__main__':
     monitor = Monitor("1")
-    monitor.parser_data_to_json("../utils/t_index_info.csv")
-
+    data = monitor.get_once_sp_daemon_data(package_name="com.tencent.mm")
+    print(monitor.parser_cpu_data(cpu_data=data))

@@ -2,3 +2,4 @@ hmdriver2
 uiviewer
 opencv-python
 numpy
+sqlalchemy

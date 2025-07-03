@@ -82,4 +82,92 @@ db.insert_version('v2.1.3', '2025-07-01', 85, [
     {"title": "内存使用", "value": 156, "unit": "MB"},
 ])
 history = db.get_history()
-print(history) 
+print(history)
+
+
+from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
+from typing import List, Dict, Any, Optional
+import os
+
+DB_PATH = 'history.db'
+Base = declarative_base()
+
+class Version(Base):
+    __tablename__ = 'version'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    version = Column(String)
+    date = Column(String)
+    score = Column(Integer)
+    metrics = relationship('Metric', back_populates='version', cascade='all, delete-orphan')
+
+class Metric(Base):
+    __tablename__ = 'metric'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    version_id = Column(Integer, ForeignKey('version.id'))
+    title = Column(String)
+    value = Column(Float)
+    unit = Column(String)
+    version = relationship('Version', back_populates='metrics')
+
+class HistoryDB:
+    def __init__(self, db_path: str = DB_PATH):
+        self.db_path = db_path
+        db_url = f'sqlite:///{self.db_path}'
+        self.engine = create_engine(db_url, echo=False, future=True)
+        Base.metadata.create_all(self.engine)
+        self.Session = sessionmaker(bind=self.engine, future=True)
+
+    def insert_version(self, version: str, date: str, score: int, metrics: List[Dict[str, Any]]):
+        session = self.Session()
+        try:
+            v = Version(version=version, date=date, score=score)
+            for metric in metrics:
+                m = Metric(title=metric['title'], value=metric['value'], unit=metric['unit'])
+                v.metrics.append(m)
+            session.add(v)
+            session.commit()
+        finally:
+            session.close()
+
+    def get_history(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+        session = self.Session()
+        try:
+            q = session.query(Version).order_by(Version.date.desc())
+            if limit:
+                q = q.limit(limit)
+            versions = q.all()
+            history = []
+            for v in versions:
+                metrics = [
+                    {"title": m.title, "value": m.value, "unit": m.unit}
+                    for m in v.metrics
+                ]
+                history.append({
+                    "version": v.version,
+                    "date": v.date,
+                    "score": v.score,
+                    "metrics": metrics
+                })
+            return history
+        finally:
+            session.close()
+
+    def clear(self):
+        session = self.Session()
+        try:
+            session.query(Metric).delete()
+            session.query(Version).delete()
+            session.commit()
+        finally:
+            session.close()
+
+# 使用示例：
+if __name__ == '__main__':
+    db = HistoryDB()
+    db.insert_version('v2.1.3', '2025-07-01', 85, [
+        {"title": "应用启动", "value": 1.2, "unit": "s"},
+        {"title": "内存使用", "value": 156, "unit": "MB"},
+    ])
+    history = db.get_history()
+    print(history)
